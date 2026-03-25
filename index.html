@@ -1,1 +1,711 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Convenção de Líderes 2026 - Brisanet</title>
+    
+    <!-- Google Fonts: Figtree -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Figtree', 'sans-serif'],
+                        tech: ['Figtree', 'sans-serif']
+                    },
+                    colors: {
+                        brand: {
+                            DEFAULT: '#FF6600', // Laranja Principal
+                            dark: '#E63900',    // Laranja Escuro
+                            light: '#FF8533'    // Laranja Claro
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FF7E05 0%, #E63900 100%);
+            color: #FFFFFF; 
+            overflow: hidden; 
+        }
+
+        /* --- Elementos Decorativos --- */
+        .bg-ring {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .ring-1 { width: 400px; height: 400px; top: -100px; left: -100px; border: 40px solid rgba(255, 255, 255, 0.1); background: transparent; }
+        .ring-2 { width: 200px; height: 200px; top: 50px; left: 150px; }
+        .ring-3 { width: 600px; height: 600px; bottom: -200px; right: -150px; border: 60px solid rgba(255, 255, 255, 0.08); background: transparent; }
+
+        /* --- UI Glassmorphism --- */
+        .tech-panel {
+            background: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #FFFFFF; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2); 
+            z-index: 10;
+        }
+
+        /* --- O Ambiente 3D do Mapa (Responsivo) --- */
+        .map-stage {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px; 
+            z-index: 5;
+        }
+
+        /* Wrapper flutuante para a página ficar 100% animada sempre */
+        .floating-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: global-float 6s ease-in-out infinite;
+        }
+        @keyframes global-float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .map-3d-container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 1 / 1;
+            transform: rotateX(30deg) rotateZ(0deg) scale(0.9);
+            transform-style: preserve-3d;
+            transition: transform 1.5s cubic-bezier(0.25, 1, 0.3, 1);
+            filter: drop-shadow(-15px 25px 20px rgba(0,0,0,0.3));
+        }
+
+        /* --- Estilos do SVG do Brasil --- */
+        .br-state {
+            fill: transparent; 
+            stroke: rgba(255, 255, 255, 0.25); 
+            stroke-width: 1.5;
+            stroke-linejoin: round;
+            transition: all 0.8s ease;
+        }
+
+        .br-centroid {
+            fill: #FFFFFF; 
+            r: 3.5;
+            opacity: 0.7;
+            transition: all 0.5s ease;
+        }
+
+        .state-active {
+            stroke: #FFFFFF !important;
+            stroke-width: 3 !important;
+            fill: rgba(255, 255, 255, 0.15) !important;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5)); 
+            transform: translateZ(6px);
+        }
+
+        .centroid-active {
+            fill: #FFFFFF !important;
+            r: 7 !important;
+            filter: drop-shadow(0 0 15px #FFFFFF);
+            transform: translateZ(10px);
+            animation: strategic-pulse 1.5s infinite alternate;
+        }
+
+        @keyframes strategic-pulse {
+            0% { filter: drop-shadow(0 0 10px #FFFFFF); r: 6; }
+            100% { filter: drop-shadow(0 0 25px #FFFFFF); r: 9; }
+        }
+
+        .shockwave {
+            fill: none;
+            stroke: #FFFFFF;
+            stroke-width: 3;
+            opacity: 0;
+            transform-origin: center;
+        }
+        .shockwave.explode {
+            animation: shock-explode 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+        @keyframes shock-explode {
+            0% { r: 0; opacity: 1; stroke-width: 6; }
+            100% { r: 100; opacity: 0; stroke-width: 0; }
+        }
+
+        /* --- Linha de Voo (Rasto Principal) --- */
+        .flight-path {
+            fill: none;
+            stroke: #FFFFFF; 
+            stroke-width: 4; 
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            transition: stroke-dashoffset 1.5s linear; /* Linear syncs with airplane */
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+            transform: translateZ(10px); 
+        }
+
+        /* --- Rasto Animado Contínuo (Energia Flutuante) --- */
+        .flight-path-flow {
+            fill: none;
+            stroke: #FFD27F; /* Tom quente para energia */
+            stroke-width: 4.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 10 20; /* Tracejado que vai criar o movimento */
+            animation: dash-flow 0.8s linear infinite;
+            transform: translateZ(11px);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        @keyframes dash-flow {
+            to { stroke-dashoffset: -30; }
+        }
+
+        .node-completed {
+            fill: #FFFFFF;
+            stroke: #FF6600;
+            stroke-width: 2.5;
+            r: 6;
+            filter: drop-shadow(0 0 5px #FFFFFF);
+            transform: translateZ(8px);
+        }
+
+        .victory-spin {
+            animation: orbit-map 30s linear infinite !important;
+        }
+        @keyframes orbit-map {
+            0% { transform: rotateX(45deg) rotateZ(0deg) scale(1); }
+            100% { transform: rotateX(45deg) rotateZ(360deg) scale(1); }
+        }
+
+        /* --- Formatação da Agenda (Schedule) --- */
+        .kpi-box { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; }
+        .schedule-list { list-style: none; padding: 0; margin: 0; font-size: 13px; }
+        .schedule-list li { margin-bottom: 12px; padding-left: 18px; position: relative; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        .schedule-list li:last-child { border-bottom: none; }
+        .schedule-list li::before { content: "•"; position: absolute; left: 0; top: -2px; font-size: 18px; color: #FFFFFF; font-weight: black; }
+        .time-badge { display: inline-block; background: #FFFFFF; color: #FF6600; padding: 2px 6px; border-radius: 4px; font-weight: 900; margin-right: 8px; font-size: 11px; letter-spacing: 0.5px; }
+        .block-title { font-weight: 800; color: #FFFFFF; }
+        .output-text { display: block; font-size: 11px; color: rgba(255,255,255,0.9); margin-top: 4px; font-weight: 600; background: rgba(0,0,0,0.1); padding: 4px 6px; border-radius: 4px; border-left: 2px solid #FFFFFF; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.5); border-radius: 6px; }
+
+        /* Ajustes para ecrãs muito pequenos */
+        @media (max-width: 1024px) {
+            .map-3d-container { max-width: 95%; }
+            #ui-number { font-size: 3rem; }
+            #ui-title { font-size: 1.25rem; }
+        }
+    </style>
+</head>
+<!-- flex-col-reverse garante que o painel fica em baixo e o mapa em cima no mobile -->
+<body class="flex flex-col-reverse lg:flex-row font-sans relative h-screen w-screen overflow-hidden">
+
+    <div class="bg-ring ring-1"></div>
+    <div class="bg-ring ring-2"></div>
+    <div class="bg-ring ring-3"></div>
+
+    <!-- PAINEL ESQUERDO: Dashboard UI (Scrollable on Mobile) -->
+    <div class="w-full lg:w-[38%] h-[55vh] lg:h-screen flex flex-col justify-between p-4 lg:p-8 z-20 overflow-y-auto relative border-t lg:border-t-0 lg:border-r border-white/20 pb-6 lg:pb-8">
+        
+        <header class="mb-4 lg:mb-5">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-white flex items-center justify-center shadow-[0_4px_20px_rgba(255,255,255,0.3)]">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF6600" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-.5-.5-2.5 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.7l-1.2 3.6c-.1.4.1.9.5 1.1L9 14l-4 4-2.5-.5c-.4-.1-.8.1-1 .5l-.5 1.5c-.1.4.1.8.5.9l4.5 1.5 1.5 4.5c.1.4.5.6.9.5l1.5-.5c.4-.2.6-.6.5-1l-.5-2.5 4-4 2.4 6c.2.4.7.6 1.1.5l3.6-1.2c.5-.2.8-.6.7-1.1z"/></svg>
+                </div>
+                <div>
+                    <h2 class="text-white uppercase tracking-widest text-[10px] lg:text-[11px] font-black opacity-90">Plano de Voo</h2>
+                    <h1 class="text-xl lg:text-3xl text-white font-black leading-none mt-1 uppercase tracking-tight drop-shadow-md">Convenção 2026</h1>
+                </div>
+            </div>
+            <p class="text-white text-[13px] lg:text-[14px] leading-relaxed font-semibold opacity-90 hidden lg:block">
+                Acompanhe o cronograma estratégico da nossa liderança. Dois dias de alinhamento, cenários de mercado e governança.
+            </p>
+        </header>
+
+        <!-- Dynamic Content Card -->
+        <div class="tech-panel rounded-2xl p-4 lg:p-6 flex-1 flex flex-col relative mb-4">
+            <div class="mb-3 lg:mb-4 border-b border-white/30 pb-2 lg:pb-3 flex justify-between items-center">
+                <span id="ui-module" class="text-white text-[11px] lg:text-[13px] tracking-[0.1em] font-black uppercase">Aguardando Embarque</span>
+                <span id="ui-status" class="px-2 py-1 lg:px-3 bg-white text-[#FF6600] rounded text-[10px] lg:text-[11px] font-black uppercase tracking-wider shadow-sm">Portão Fechado</span>
+            </div>
+            
+            <div class="flex items-center gap-2 lg:gap-3 mb-3 lg:mb-4">
+                <span id="ui-number" class="text-4xl lg:text-6xl font-black text-white/40 leading-none">00</span>
+                <h3 id="ui-title" class="text-[16px] lg:text-[24px] font-black text-white leading-tight">Mapa de Bordo</h3>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto pr-2 lg:pr-3">
+                <div id="ui-desc" class="text-white text-[13px] lg:text-[15px] leading-relaxed font-medium">
+                    Autorize a decolagem para iniciarmos a leitura do mapa estratégico e o detalhamento da agenda por blocos de horários.
+                </div>
+            </div>
+
+            <!-- KPIs Dinâmicos -->
+            <div class="grid grid-cols-2 gap-2 lg:gap-3 mt-3 lg:mt-4 pt-3 lg:pt-4 border-t border-white/30">
+                <div class="kpi-box p-2 lg:p-3 text-center">
+                    <div class="text-white opacity-80 text-[9px] lg:text-[10px] uppercase tracking-widest mb-1 font-black">Dia da Convenção</div>
+                    <div id="kpi-dia" class="text-white font-black text-lg lg:text-xl">--</div>
+                </div>
+                <div class="kpi-box p-2 lg:p-3 text-center">
+                    <div class="text-white opacity-80 text-[9px] lg:text-[10px] uppercase tracking-widest mb-1 font-black">Turno / Bloco</div>
+                    <div id="kpi-turno" class="text-white font-black text-lg lg:text-xl">--</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress & Controls -->
+        <div>
+            <div class="flex justify-between items-end mb-2">
+                <div class="text-[10px] lg:text-xs text-white uppercase tracking-widest font-black">Progresso</div>
+                <div id="ui-pct" class="text-white font-black text-lg lg:text-xl drop-shadow-md">0%</div>
+            </div>
+            <div class="w-full bg-black/20 rounded-full h-2.5 lg:h-3 mb-4 lg:mb-5 overflow-hidden border border-white/40 shadow-inner">
+                <div id="progress-bar" class="bg-white h-full transition-all duration-1000 ease-out shadow-[0_0_15px_#FFFFFF]" style="width: 0%"></div>
+            </div>
+
+            <div class="flex gap-2 lg:gap-3">
+                <button onclick="resetSystem()" class="p-3 lg:p-4 rounded-xl bg-white/20 border border-white/50 text-white hover:bg-white/30 transition-all font-bold">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                </button>
+                <button id="btn-next" onclick="nextStep()" class="flex-1 p-3 lg:p-4 rounded-xl bg-white text-[#FF6600] font-black uppercase tracking-wider text-xs lg:text-sm transition-all hover:scale-[1.02] shadow-[0_10px_25px_rgba(0,0,0,0.3)] flex justify-center items-center gap-2">
+                    Autorizar Decolagem
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-.5-.5-2.5 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.7l-1.2 3.6c-.1.4.1.9.5 1.1L9 14l-4 4-2.5-.5c-.4-.1-.8.1-1 .5l-.5 1.5c-.1.4.1.8.5.9l4.5 1.5 1.5 4.5c.1.4.5.6.9.5l1.5-.5c.4-.2.6-.6.5-1l-.5-2.5 4-4 2.4 6c.2.4.7.6 1.1.5l3.6-1.2c.5-.2.8-.6.7-1.1z"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAINEL DIREITO: MAPA 3D HOLOGRÁFICO -->
+    <div class="w-full lg:w-[62%] h-[45vh] lg:h-screen map-stage overflow-visible bg-black/10 lg:bg-transparent">
+        <div class="floating-wrapper">
+            <div class="map-3d-container" id="map-3d">
+
+                <div id="map-loader" class="absolute inset-0 flex items-center justify-center text-white animate-pulse z-50 font-black text-lg lg:text-2xl tracking-widest drop-shadow-md">
+                    A CALIBRAR RADARES...
+                </div>
+                
+                <svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" class="w-full h-full opacity-0 transition-opacity duration-1000" id="brasil-svg">
+                    <defs>
+                        <g id="plane-icon">
+                            <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" fill="#FFFFFF" filter="drop-shadow(0px 5px 8px rgba(0,0,0,0.4))"/>
+                        </g>
+                    </defs>
+
+                    <g id="map-group"></g>
+                    <g id="centroids-group"></g>
+                    <g id="trail-layer"></g>
+
+                    <use href="#plane-icon" id="traveling-plane" x="0" y="0" width="36" height="36" style="display: none; transform-origin: center; transition: transform 1.5s linear; transform: translate(-18px, -18px) translateZ(25px);" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const map3d = document.getElementById('map-3d');
+        const planeIcon = document.getElementById('traveling-plane');
+        const trailLayer = document.getElementById('trail-layer');
+        let currentStep = 0;
+        let isStarted = false; 
+        let activeStateElement = null;
+        let activeCentroidElement = null;
+
+        // --- DADOS E LÓGICA DO MAPA D3.js ---
+        let mapCentroids = {};
+
+        async function loadHighQualityMap() {
+            try {
+                const d3Script = document.createElement('script');
+                d3Script.src = "https://d3js.org/d3.v7.min.js";
+                document.head.appendChild(d3Script);
+
+                d3Script.onload = async () => {
+                    const geojson = await d3.json("https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson");
+                    
+                    const width = 1000;
+                    const height = 1000;
+                    const projection = d3.geoMercator().fitSize([width, height], geojson);
+                    const pathGenerator = d3.geoPath().projection(projection);
+
+                    const mapGroup = d3.select("#map-group");
+                    const centroidsGroup = d3.select("#centroids-group");
+                    
+                    geojson.features.forEach(d => {
+                        mapGroup.append("path")
+                            .datum(d)
+                            .attr("d", pathGenerator)
+                            .attr("id", `state-${d.properties.sigla}`)
+                            .attr("class", "br-state");
+
+                        const centroid = pathGenerator.centroid(d);
+                        if (!isNaN(centroid[0])) {
+                            mapCentroids[d.properties.sigla] = { x: centroid[0], y: centroid[1] };
+                            centroidsGroup.append("circle")
+                                .attr("cx", centroid[0])
+                                .attr("cy", centroid[1])
+                                .attr("id", `centroid-${d.properties.sigla}`)
+                                .attr("class", "br-centroid");
+                        }
+                    });
+
+                    document.getElementById('map-loader').style.display = 'none';
+                    document.getElementById('brasil-svg').classList.remove('opacity-0');
+                    initMapNodes();
+                };
+            } catch (error) { console.error("Erro ao carregar mapa", error); }
+        }
+
+        // --- CONTEÚDO ESTRATÉGICO: PROGRAMAÇÃO CONVENÇÃO 2026 ---
+        const conventionData = [
+            { 
+                id: 1, state: 'CE', dia: 'Dia 1', turno: 'Manhã', status: 'Decolagem',
+                title: "Contexto, Mercado e Cliente", 
+                desc: `<ul class="schedule-list">
+                    <li><span class="time-badge">08:00 - 08:30</span><span class="block-title">Boas-vindas e integração</span><span class="output-text">Output: Recepção - Cartão de Embarque</span></li>
+                    <li><span class="time-badge">08:30 - 08:40</span><span class="block-title">Alinhamento dos objetivos</span><span class="output-text">Output: Boas-Vindas e Segurança de Voo</span></li>
+                    <li><span class="time-badge">08:40 - 09:25</span><span class="block-title">Clareza estratégica | Trade-offs</span><span class="output-text">Output: Contexto & Direção Estratégica</span></li>
+                    <li><span class="time-badge">09:25 - 09:30</span><span class="block-title">Inspiração e engajamento</span><span class="output-text">Output: Vídeo de Abertura 2025/2026</span></li>
+                    <li><span class="time-badge">09:30 - 09:45</span><span class="block-title">Integração de grupos</span><span class="output-text">Output: Embarque da Tripulação (Speed date)</span></li>
+                </ul>` 
+            },
+            { 
+                id: 2, state: 'RN', dia: 'Dia 1', turno: 'Manhã', status: 'Em Rota',
+                title: "Cenários & Cliente", 
+                desc: `<ul class="schedule-list">
+                    <li><span class="time-badge">09:45 - 10:10</span><span class="block-title">Compreensão do posicionamento</span><span class="output-text">Output: Cenários de Mercado – Bloco A</span></li>
+                    <li><span class="time-badge">10:10 - 10:30</span><span class="block-title">Compreensão do posicionamento</span><span class="output-text">Output: Cenários de Mercado – Bloco B</span></li>
+                    <li><span class="time-badge">10:30 - 10:40</span><span class="block-title">Intervalo Estratégico</span></li>
+                    <li><span class="time-badge">10:40 - 11:00</span><span class="block-title">Clareza sobre jornada do cliente</span><span class="output-text">Output: Experiência do Cliente</span></li>
+                </ul>` 
+            },
+            { 
+                id: 3, state: 'PB', dia: 'Dia 1', turno: 'Fim da Manhã', status: 'Em Rota',
+                title: "Pilares & Orçamento", 
+                desc: `<ul class="schedule-list">
+                    <li><span class="time-badge">11:00 - 11:15</span><span class="block-title">Nossos Pilares de Crescimento</span><span class="output-text">Output: Entendimento dos 3 motores (A3)</span></li>
+                    <li><span class="time-badge">11:15 - 11:30</span><span class="block-title">Reconhecimento entre líderes</span><span class="output-text">Output: Celebração Valor Cliente</span></li>
+                    <li><span class="time-badge">11:30 - 11:50</span><span class="block-title">Estratégia: Voo Brisanet 2026</span><span class="output-text">Output: Entendimento da dinâmica</span></li>
+                    <li><span class="time-badge">11:50 - 12:10</span><span class="block-title">Radar Estratégico - Impedimentos</span><span class="output-text">Output: Identificação de bloqueios</span></li>
+                    <li><span class="time-badge">12:10 - 12:35</span><span class="block-title">Mensagem Cabine – Orçamento</span><span class="output-text">Output: Contexto financeiro</span></li>
+                    <li><span class="time-badge">12:35 - 13:00</span><span class="block-title">Radar Estratégico - Prioridades</span><span class="output-text">Output: Até 5 prioridades definidas por tema</span></li>
+                </ul>` 
+            },
+            { 
+                id: 4, state: 'PE', dia: 'Dia 1', turno: 'Tarde', status: 'Radar Ativo',
+                title: "Radar & Integração", 
+                desc: `<ul class="schedule-list">
+                    <li><span class="time-badge">14:00 - 14:20</span><span class="block-title">Acolhimento e Laboral</span><span class="output-text">Radar: Conversas e Acordos (Prioridades x Motor)</span></li>
+                    <li><span class="time-badge">14:20 - 14:50</span><span class="block-title">Radar: O que Deixar de Fazer</span><span class="output-text">Output: Definição de desprioridades</span></li>
+                    <li><span class="time-badge">14:50 - 15:05</span><span class="block-title">Mensagem Cabine - Jornada Digital</span><span class="output-text">Output: Contexto digital</span></li>
+                    <li><span class="time-badge">15:05 - 15:25</span><span class="block-title">Reconhecimento Valor Cliente</span><span class="output-text">Celebração Interna</span></li>
+                    <li><span class="time-badge">15:25 - 15:35</span><span class="block-title">Operação Brisanet e Silos</span><span class="output-text">Output: Integração operacional</span></li>
+                </ul>` 
+            },
+            { 
+                id: 5, state: 'AL', dia: 'Dia 1', turno: 'Fim de Tarde', status: 'Fechamento',
+                title: "Mapa Estratégico & Happy Hour", 
+                desc: `<ul class="schedule-list">
+                    <li><span class="time-badge">15:35 - 15:50</span><span class="block-title">Intervalo & Integração Social</span></li>
+                    <li><span class="time-badge">15:50 - 16:35</span><span class="block-title">Validação: Mapa Estratégico 2026</span><span class="output-text">Output: Visão integrada de prioridades</span></li>
+                    <li><span class="time-badge">16:35 - 17:05</span><span class="block-title">Mensagem Cabine - Pessoas</span><span class="output-text">Output: Contexto de cultura e pessoas</span></li>
+                    <li><span class="time-badge">17:05 - 17:35</span><span class="block-title">Radar Estratégico - Reavaliação</span><span class="output-text">Output: Validação baseada nos cenários</span></li>
+                    <li><span class="time-badge">17:45 - 18:00</span><span class="block-title">Reflexões e Fechamento CEO</span><span class="output-text">Output: Síntese e inspiração</span></li>
+                    <li><span class="time-badge">19:00 - 21:00</span><span class="block-title">Happy Hour (Integração)</span></li>
+                </ul>` 
+            },
+            { 
+                id: 6, state: 'BA', dia: 'Dia 2', turno: 'Manhã', status: 'Nova Fase',
+                title: "Sustentar a Rota (Governança)", 
+                desc: `<ul class="schedule-list">
+                    <li><span class="time-badge">08:30 - 08:40</span><span class="block-title">Recepção do Voo</span><span class="output-text">Cartão de Embarque e Segurança</span></li>
+                    <li><span class="time-badge">08:45 - 08:55</span><span class="block-title">Aprendizados da jornada</span><span class="output-text">Output: Embarque e Aprendizados</span></li>
+                    <li><span class="time-badge">08:55 - 09:00</span><span class="block-title">Entendimento da dinâmica</span><span class="output-text">Output: Estratégia Voo Brisanet 2026</span></li>
+                    <li><span class="time-badge">09:00 - 09:25</span><span class="block-title">Entendimento PPR</span><span class="output-text">Output: Resultados PPR & Rito</span></li>
+                </ul>` 
+            },
+            { 
+                id: 7, state: 'GO', dia: 'Dia 2', turno: 'Meio da Manhã', status: 'Governança',
+                title: "Estrutura & Construção", 
+                desc: `<ul class="schedule-list">
+                    <li><span class="time-badge">09:25 - 09:50</span><span class="block-title">Governança - Como Estamos?</span><span class="output-text">Output: Consciência e Oportunidades</span></li>
+                    <li><span class="time-badge">09:50 - 10:00</span><span class="block-title">Intervalo de Descompressão</span></li>
+                    <li><span class="time-badge">10:00 - 10:40</span><span class="block-title">Governança - Construção</span><span class="output-text">Output: Arquitetura, Rituais e Papéis</span></li>
+                </ul>` 
+            },
+            { 
+                id: 8, state: 'MS', dia: 'Dia 2', turno: 'Fim da Manhã', status: 'Aprovações',
+                title: "Validação & Próximos Passos", 
+                desc: `<ul class="schedule-list">
+                    <li><span class="time-badge">10:40 - 11:00</span><span class="block-title">Governança validada</span><span class="output-text">Output: Apresentação e Validação</span></li>
+                    <li><span class="time-badge">11:00 - 11:20</span><span class="block-title">Próximos passos imediatos</span><span class="output-text">Output: Papéis e Responsabilidades</span></li>
+                </ul>` 
+            },
+            { 
+                id: 9, state: 'MA', dia: 'Dia 2', turno: 'Meio-Dia', status: 'Aterrissagem',
+                title: "Compromissos Finais", 
+                desc: `<ul class="schedule-list">
+                    <li><span class="time-badge">11:20 - 11:30</span><span class="block-title">Compromissos formalizados</span><span class="output-text">Output: Rito da Torre</span></li>
+                    <li><span class="time-badge">11:30 - 11:40</span><span class="block-title">Reconhecimento entre líderes</span><span class="output-text">Output: Celebração e Valor Cliente</span></li>
+                    <li><span class="time-badge">11:40 - 11:45</span><span class="block-title">Feedback</span><span class="output-text">Output: Avaliação da Convenção</span></li>
+                </ul>` 
+            },
+            { 
+                id: 10, state: 'CE', dia: 'Dia 2', turno: 'Encerramento', status: 'Destino',
+                title: "Fechamento CEO", 
+                desc: `<ul class="schedule-list">
+                    <li><span class="time-badge">11:45 - 12:00</span><span class="block-title">Síntese e inspiração</span><span class="output-text">Output: Fechamento oficial CEO Brisanet</span></li>
+                </ul>
+                <div class="mt-4 p-3 bg-white text-[#FF6600] rounded font-black text-center shadow-md">
+                    CONVENÇÃO ENCERRADA. BEM-VINDOS AO FUTURO.
+                </div>` 
+            }
+        ];
+
+        function initMapNodes() {
+            trailLayer.innerHTML = '';
+            
+            conventionData.forEach(point => {
+                if(mapCentroids[point.state]) {
+                    point.x = mapCentroids[point.state].x;
+                    point.y = mapCentroids[point.state].y;
+                } else { point.x = 500; point.y = 500; }
+            });
+
+            conventionData.forEach((point, i) => {
+                if (i > 0) {
+                    const prev = conventionData[i - 1];
+                    
+                    // IMPORTANTE: Mudei para "L" (Linha Reta) para sincronizar perfeitamente com a animação linear do avião
+                    const dString = `M ${prev.x},${prev.y} L ${point.x},${point.y}`;
+                    
+                    // O Rasto Principal
+                    const pathLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    pathLine.setAttribute('d', dString);
+                    pathLine.setAttribute('class', 'flight-path');
+                    pathLine.setAttribute('id', `path-${i}`);
+                    
+                    // A Animação Contínua (Energia Flutuante) que fica por cima do rasto depois
+                    const pathFlow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    pathFlow.setAttribute('d', dString);
+                    pathFlow.setAttribute('class', 'flight-path-flow');
+                    pathFlow.setAttribute('id', `flow-${i}`);
+
+                    trailLayer.appendChild(pathLine);
+                    trailLayer.appendChild(pathFlow);
+                }
+
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', point.x); circle.setAttribute('cy', point.y);
+                circle.setAttribute('r', '0'); 
+                circle.setAttribute('class', 'node-completed');
+                circle.style.opacity = '0';
+                circle.id = `node-${i}`;
+                
+                const shockwave = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                shockwave.setAttribute('cx', point.x); shockwave.setAttribute('cy', point.y);
+                shockwave.setAttribute('class', 'shockwave');
+                shockwave.id = `shockwave-${i}`;
+
+                trailLayer.appendChild(shockwave);
+                trailLayer.appendChild(circle);
+            });
+            
+            document.getElementById('brasil-svg').appendChild(planeIcon);
+        }
+
+        function getAngle(x1, y1, x2, y2) { return Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI; }
+
+        function processStepData() {
+            const data = conventionData[currentStep];
+
+            // 1. Atualiza UI Dashboard
+            document.getElementById('ui-number').innerText = (currentStep + 1).toString().padStart(2, '0');
+            document.getElementById('kpi-dia').innerText = data.dia;
+            document.getElementById('kpi-turno').innerText = data.turno;
+            document.getElementById('ui-status').innerText = data.status;
+            document.getElementById('ui-title').innerText = data.title;
+            document.getElementById('ui-desc').innerHTML = data.desc;
+
+            const pct = ((currentStep + 1) / conventionData.length) * 100;
+            document.getElementById('ui-pct').innerText = `${Math.round(pct)}%`;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+
+            // 2. Dispara a Shockwave Estratégica
+            const currentShockwave = document.getElementById(`shockwave-${currentStep}`);
+            if(currentShockwave) {
+                currentShockwave.classList.remove('explode');
+                void currentShockwave.offsetWidth; 
+                currentShockwave.classList.add('explode');
+            }
+
+            // 3. Animações de Voo e Rasto Contínuo
+            if (currentStep > 0) {
+                const prevPoint = conventionData[currentStep - 1];
+                const path = document.getElementById(`path-${currentStep}`);
+                const flow = document.getElementById(`flow-${currentStep}`);
+                
+                // Desenha a linha solidamente (1.5s = tempo da transição)
+                path.style.strokeDashoffset = '0';
+                
+                // Após o avião passar, a linha ganha o efeito de energia contínuo!
+                setTimeout(() => { flow.style.opacity = '1'; }, 1500);
+
+                const prevMarker = document.getElementById(`node-${currentStep - 1}`);
+                prevMarker.style.opacity = '1';
+                prevMarker.setAttribute('r', '6');
+
+                const angle = getAngle(prevPoint.x, prevPoint.y, data.x, data.y);
+                // Avião roda e viaja para o ponto exato com animação linear
+                planeIcon.style.transform = `translate(${data.x - 18}px, ${data.y - 18}px) rotate(${angle + 45}deg) translateZ(30px) scale(2)`;
+            } else {
+                planeIcon.style.display = 'block';
+                planeIcon.style.transform = `translate(${data.x - 18}px, ${data.y - 18}px) rotate(-45deg) translateZ(30px) scale(2)`;
+            }
+
+            // 4. Highlight dos Estados Brancos
+            if (activeStateElement) activeStateElement.classList.remove('state-active');
+            if (activeCentroidElement) activeCentroidElement.classList.remove('centroid-active');
+            
+            const newStateElement = document.getElementById(`state-${data.state}`);
+            const newCentroidElement = document.getElementById(`centroid-${data.state}`);
+            
+            if (newStateElement) { newStateElement.classList.add('state-active'); activeStateElement = newStateElement; }
+            if (newCentroidElement) { newCentroidElement.classList.add('centroid-active'); activeCentroidElement = newCentroidElement; }
+
+            // 5. Câmera Mobile-Friendly
+            if (window.innerWidth < 1024) {
+                map3d.style.transform = 'rotateX(40deg) rotateZ(-10deg) scale(1) translateY(10px)';
+            } else {
+                if (currentStep < 5) map3d.style.transform = 'rotateX(50deg) rotateZ(-15deg) scale(1.15) translateX(-50px) translateY(30px)';
+                else map3d.style.transform = 'rotateX(58deg) rotateZ(-30deg) scale(1.25) translateY(-80px) translateX(30px)';
+            }
+
+            currentStep++;
+            const btn = document.getElementById('btn-next');
+            
+            if (currentStep === conventionData.length) {
+                btn.innerHTML = 'Aterrar & Encerrar <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3-9L9 3l3 9H6l-2-3H2l1.5 5.5L2 19h2l2-3h6l-3 9h6l3-9h4c1.1 0 2-.9 2-2s-.9-2-2-2z"/></svg>';
+                btn.classList.add('bg-white', 'text-[#E63900]');
+                setTimeout(triggerEndSequence, 1500);
+            } else {
+                btn.innerHTML = 'Avançar na Agenda <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+            }
+            
+            // Fazer auto-scroll para baixo no mobile se for um ecrã pequeno, para facilitar leitura da agenda
+            if(window.innerWidth < 1024) {
+                const descDiv = document.getElementById('ui-desc').parentElement;
+                setTimeout(() => { descDiv.scrollTop = descDiv.scrollHeight; }, 300);
+            }
+        }
+
+        function nextStep() {
+            if (currentStep >= conventionData.length) return;
+            const btn = document.getElementById('btn-next');
+
+            if (!isStarted) {
+                isStarted = true;
+                btn.innerHTML = 'Torre Autorizada...';
+                if(window.innerWidth >= 1024) {
+                    map3d.style.transform = 'rotateX(50deg) rotateZ(-15deg) scale(1.15) translateX(-50px) translateY(30px)';
+                }
+                setTimeout(() => { processStepData(); }, 1000);
+                return;
+            }
+            processStepData();
+        }
+
+        function triggerEndSequence() {
+            map3d.style.transform = '';
+            map3d.classList.add('victory-spin');
+            
+            const finalPoint = conventionData[currentStep - 1];
+            planeIcon.style.transform = `translate(${finalPoint.x - 18}px, ${finalPoint.y - 18}px) rotate(0deg) scale(1.5)`;
+
+            if (activeStateElement) activeStateElement.classList.remove('state-active');
+            if (activeCentroidElement) activeCentroidElement.classList.remove('centroid-active');
+
+            const states = document.querySelectorAll('.br-state');
+            states.forEach(s => { s.style.stroke = '#FFFFFF'; s.style.strokeWidth = '2'; s.style.fill = 'rgba(255,255,255,0.08)'; });
+
+            document.getElementById('ui-status').innerText = "Voo Concluído";
+            document.getElementById('ui-title').innerText = "Sucesso Absoluto!";
+            
+            const btn = document.getElementById('btn-next');
+            btn.innerHTML = 'Convenção Finalizada';
+            btn.disabled = true;
+            btn.classList.add('opacity-60', 'cursor-not-allowed');
+        }
+
+        function resetSystem() {
+            currentStep = 0;
+            isStarted = false;
+            map3d.classList.remove('victory-spin'); 
+            
+            document.getElementById('ui-number').innerText = "00";
+            document.getElementById('ui-status').innerText = "Portão Fechado";
+            document.getElementById('kpi-dia').innerText = "--";
+            document.getElementById('kpi-turno').innerText = "--";
+            document.getElementById('ui-title').innerText = "Mapa de Bordo";
+            document.getElementById('ui-desc').innerHTML = "Autorize a decolagem para iniciarmos a leitura do mapa estratégico e o detalhamento da agenda por blocos de horários.";
+            document.getElementById('ui-pct').innerText = "0%";
+            document.getElementById('progress-bar').style.width = "0%";
+
+            if (activeStateElement) activeStateElement.classList.remove('state-active');
+            if (activeCentroidElement) activeCentroidElement.classList.remove('centroid-active');
+            activeStateElement = null;
+            activeCentroidElement = null;
+
+            planeIcon.style.display = 'none';
+            const states = document.querySelectorAll('.br-state');
+            states.forEach(s => { s.style.stroke = ''; s.style.strokeWidth = ''; s.style.fill = ''; });
+
+            const shockwaves = document.querySelectorAll('.shockwave');
+            shockwaves.forEach(s => s.classList.remove('explode'));
+            
+            const flows = document.querySelectorAll('.flight-path-flow');
+            flows.forEach(f => f.style.opacity = '0');
+
+            map3d.style.transform = 'rotateX(30deg) rotateZ(0deg) scale(0.9)';
+
+            const btn = document.getElementById('btn-next');
+            btn.innerHTML = 'Autorizar Decolagem <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-.5-.5-2.5 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.7l-1.2 3.6c-.1.4.1.9.5 1.1L9 14l-4 4-2.5-.5c-.4-.1-.8.1-1 .5l-.5 1.5c-.1.4.1.8.5.9l4.5 1.5 1.5 4.5c.1.4.5.6.9.5l1.5-.5c.4-.2.6-.6.5-1l-.5-2.5 4-4 2.4 6c.2.4.7.6 1.1.5l3.6-1.2c.5-.2.8-.6.7-1.1z"/></svg>';
+            btn.classList.remove('opacity-60', 'cursor-not-allowed', 'bg-white', 'text-[#E63900]');
+            btn.classList.add('bg-white', 'text-[#FF6600]');
+            btn.disabled = false;
+
+            initMapNodes();
+        }
+
+        window.onload = loadHighQualityMap;
+    </script>
+</body>
+</html>
