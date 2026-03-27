@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -171,7 +171,7 @@
         <h2 class="text-white text-2xl font-black mb-2 tracking-widest text-center px-4 uppercase slide-up-element delay-100 drop-shadow-md">✈️ O Nosso Plano de Voo</h2>
         <p class="text-[#FFCA28] text-sm lg:text-base font-bold mb-10 text-center px-6 slide-up-element delay-200">Acompanhe a agenda estratégica da nossa Convenção.</p>
         
-        <button onclick="startJourney()" class="px-8 py-4 bg-white text-[#FF6600] rounded-full font-black uppercase tracking-wider text-sm shadow-[0_10px_30px_rgba(255,255,255,0.3)] hover:scale-105 transition-transform flex items-center gap-3 slide-up-element delay-300">
+        <button onclick="startJourney()" class="px-8 py-4 bg-gradient-to-r from-[#FF7B00] to-[#E63900] border-2 border-[#FFCA28] text-white rounded-full font-black uppercase tracking-wider text-sm shadow-[0_10px_30px_rgba(255,202,40,0.3)] hover:scale-105 transition-transform flex items-center gap-3 slide-up-element delay-300">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             Apertar os Cintos
         </button>
@@ -182,7 +182,7 @@
         <img src="https://raw.githubusercontent.com/gilneilaurindo/Conven-odeL-deres2026/main/logo%20brisanet.png" alt="Brisanet" class="w-48 mb-6 drop-shadow-lg">
         <h1 class="finale-text px-4">O Destino é a<br>Excelência 🎯</h1>
         <p class="finale-sub px-6">A nossa rota está traçada. Preparem-se para um<br>encerramento histórico da nossa convenção! 🚀</p>
-        <button onclick="document.getElementById('finale-overlay').classList.remove('show');" class="mt-10 px-8 py-3 bg-white rounded-full text-[#FF6600] font-black uppercase text-sm hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.4)]">Rever a Rota</button>
+        <button onclick="document.getElementById('finale-overlay').classList.remove('show');" class="mt-10 px-8 py-3 bg-gradient-to-r from-[#FF7B00] to-[#E63900] border-2 border-[#FFCA28] rounded-full text-white font-black uppercase text-sm hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,202,40,0.4)]">Rever a Rota</button>
     </div>
 
     <div class="ring-top-left"></div><div class="dot-top-left"></div><div class="ring-bottom-left"></div><div class="ring-bottom-mid"></div>
@@ -220,7 +220,7 @@
 
         <div class="flex-shrink-0 mb-3 border-b border-white/20 pb-3">
             <div class="flex gap-2 items-center mb-1">
-                <span id="ui-module" class="bg-white text-[#FF6600] px-2 py-0.5 rounded text-[9px] font-black uppercase">✈️ Aguardando Embarque</span>
+                <span id="ui-module" class="bg-gradient-to-r from-[#FF7B00] to-[#E63900] text-white border border-[#FFCA28] px-2 py-0.5 rounded text-[9px] font-black uppercase">✈️ Aguardando Embarque</span>
                 <span id="kpi-dia" class="text-[#FFCA28] font-bold text-[11px] tracking-wider uppercase">--</span>
             </div>
             <h3 id="ui-title" class="text-[18px] lg:text-[22px] font-black text-white leading-tight">Explorar Agenda</h3>
@@ -228,7 +228,7 @@
 
         <div class="flex-1 overflow-y-auto pr-2 mb-3" id="scrollable-desc">
             <div id="animated-content" class="text-white text-[13px] lg:text-[14px] leading-relaxed font-medium">
-                Inicie a navegação. A cada avanço, o nosso voo percorre a rota estratégica, indicando a agenda e os responsáveis de cada etapa da convenção.
+                Inicie a navegação. A cada avanço, o nosso voo percorre a rota estratégica, indicando a agenda e os responsáveis em cada etapa da convenção.
             </div>
         </div>
 
@@ -245,10 +245,10 @@
             </div>
             
             <div class="flex gap-2">
-                <button id="btn-prev" onclick="prevStep()" disabled class="p-3 lg:p-4 rounded-xl bg-black/20 border border-white/20 text-white hover:bg-black/40 transition-all flex items-center justify-center">
+                <button id="btn-prev" onclick="prevStep()" disabled class="p-3 lg:p-4 rounded-xl bg-white/10 border border-[#FFCA28] text-[#FFCA28] hover:bg-white/20 transition-all flex items-center justify-center">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 </button>
-                <button id="btn-next" onclick="handleNextClick()" class="flex-1 p-3 lg:p-4 rounded-xl bg-white text-[#FF6600] font-black uppercase tracking-wider text-[12px] lg:text-[14px] transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] flex justify-center items-center gap-2 active:scale-95 disabled:scale-100 disabled:opacity-70">
+                <button id="btn-next" onclick="handleNextClick()" class="flex-1 p-3 lg:p-4 rounded-xl bg-gradient-to-r from-[#FF7B00] to-[#E63900] border border-[#FFCA28] text-white font-black uppercase tracking-wider text-[12px] lg:text-[14px] transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] flex justify-center items-center gap-2 active:scale-95 disabled:scale-100 disabled:opacity-50">
                     Iniciar Voo
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </button>
@@ -269,12 +269,8 @@
             setTimeout(() => ripple.remove(), 600);
         });
 
-        // === ÁUDIO E HAPTICS SINCRONIZADOS ===
-        function vibrateClick() { if (navigator.vibrate) navigator.vibrate(30); }
-        function vibrateChime() { if (navigator.vibrate) navigator.vibrate([100, 400, 100]); }
-        function vibrateTakeoff() { if (navigator.vibrate) navigator.vibrate([50, 200, 100, 200, 300, 200, 500, 200, 800]); }
-        function vibrateSwoosh() { if (navigator.vibrate) navigator.vibrate([50, 100, 150, 100, 50]); }
-        function vibrateLanding() { if (navigator.vibrate) navigator.vibrate([300, 100, 200, 100, 100]); }
+        // === ÁUDIO E HARDWARE ===
+        function vibrateHaptic(pattern) { if (navigator.vibrate) navigator.vibrate(pattern); }
 
         function playCallAttendantChime() {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -284,7 +280,7 @@
                 const osc = ctx.createOscillator(); const gain = ctx.createGain();
                 osc.type = 'sine'; osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime);
                 gain.gain.setValueAtTime(0, ctx.currentTime + startTime);
-                gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + startTime + 0.05);
+                gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.05);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + startTime + duration);
                 osc.connect(gain); gain.connect(ctx.destination);
                 osc.start(ctx.currentTime + startTime); osc.stop(ctx.currentTime + startTime + duration);
@@ -293,6 +289,7 @@
             playNote(783.99, 0.4, 1.5); 
         }
 
+        // Som de Descolagem (Motores a acelerar)
         function playTakeoffSound() {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (!AudioContext) return;
@@ -325,6 +322,7 @@
             noise.start(); noise.stop(ctx.currentTime + dur);
         }
 
+        // Som de Aterragem (Impacto e reversores)
         function playLandingSound() {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (!AudioContext) return;
@@ -344,6 +342,7 @@
             noise.start(); noise.stop(ctx.currentTime + dur);
         }
 
+        // Swoosh do Avião durante a rota
         function playAirplaneSwoosh() {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (!AudioContext) return;
@@ -360,21 +359,23 @@
             noiseSource.start(); noiseSource.stop(ctx.currentTime + 2);
         }
 
-        // === VOZ PROFISSIONAL E CLARA ===
+        // === VOZ HUMANIZADA E ASSERTIVA EM PT-BR ===
         function playVoiceMessage(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const msg = new SpeechSynthesisUtterance(text);
-                msg.lang = 'pt-PT'; // Mantendo coerência com intro/outro solicitada.
-                msg.rate = 1.0;  // Ritmo natural e claro
-                msg.pitch = 1.1; // Tom elegante
+                msg.lang = 'pt-BR'; 
+                msg.rate = 1.05;  // Ritmo natural e claro
+                msg.pitch = 1.1;  // Tom elegante
                 
                 let voices = window.speechSynthesis.getVoices();
                 const setVoice = () => {
                     voices = window.speechSynthesis.getVoices();
-                    // Preferência por voz PT feminina, se disponível
-                    const femaleVoice = voices.find(v => (v.lang.includes('pt-') || v.lang.includes('PT-')) && (v.name.includes('Luciana') || v.name.includes('Joana') || v.name.includes('Maria') || v.name.toLowerCase().includes('female') || v.name.includes('Google')));
+                    // Foco em encontrar voz feminina nativa do Brasil
+                    let femaleVoice = voices.find(v => (v.lang === 'pt-BR' || v.lang === 'pt_BR') && (v.name.includes('Luciana') || v.name.includes('Maria') || v.name.includes('Google') || v.name.toLowerCase().includes('female')));
+                    if (!femaleVoice) femaleVoice = voices.find(v => v.lang.includes('pt-BR'));
                     if (femaleVoice) msg.voice = femaleVoice;
+                    
                     window.speechSynthesis.speak(msg);
                 };
                 if (voices.length === 0) window.speechSynthesis.onvoiceschanged = setVoice;
@@ -416,7 +417,7 @@
             },
             { 
                 id: 'PE', dia: '🗓️ Dia 1 (Tarde)', status: 'Radar', title: "📡 Radar Estratégico", 
-                speechText: "Entramos na zona do Radar Estratégico. Altura para debatermos prioridades e alinhamentos vitais.",
+                speechText: "Entramos na zona do Radar Estratégico. Momento para debatermos prioridades e alinhamentos vitais.",
                 desc: `<ul class="schedule-list">
                     <li class="slide-up-element delay-100"><span class="time-badge">14:00</span><span class="block-title">Acolhimento e Laboral</span><span class="output-text">Prioridades x Motor de áreas</span></li>
                     <li class="slide-up-element delay-200"><span class="time-badge">14:20</span><span class="block-title">Radar: Conversas e Acordos</span><span class="output-text">Alinhamento de áreas</span></li>
@@ -571,7 +572,7 @@
         }
 
         function startJourney() {
-            vibrateTakeoff();
+            vibrateHaptic([50, 100, 50, 100, 50, 200, 100, 300, 100]); // Aceleração
             playCallAttendantChime(); 
             playTakeoffSound(); 
             
@@ -605,6 +606,9 @@
             
             const elState = document.getElementById('ui-state');
             if(elState) elState.innerText = data.id;
+
+            const elModule = document.getElementById('ui-module');
+            if(elModule) elModule.innerText = "✈️ Rota Ativa";
             
             const titleEl = document.getElementById('ui-title');
             if(titleEl) {
@@ -634,18 +638,19 @@
             const target = routeWaypoints[currentStep];
             const isFirst = (currentStep === 0);
 
+            vibrateHaptic(isFirst ? [100, 50, 100] : 50);
+            
             if (!isFirst && currentStep < TOTAL_STEPS - 1) {
-                vibrateSwoosh();
                 playCallAttendantChime();
                 playAirplaneSwoosh(); 
+                vibrateHaptic([50, 100, 50]); // Passagem do jato
                 setTimeout(() => playVoiceMessage(data.speechText), 1500);
             } else if (isFirst) {
-                // Primeira etapa é tratada no onboarding
                 setTimeout(() => playVoiceMessage(data.speechText), 500);
             }
 
             if (currentStep === TOTAL_STEPS - 1) {
-                vibrateLanding();
+                vibrateHaptic([300, 50, 200, 50, 100]); // Impacto de travagem
                 playLandingSound();
                 setTimeout(() => playVoiceMessage(data.speechText), 1500);
             }
@@ -702,7 +707,7 @@
                 }, 1500);
 
                 setTimeout(() => {
-                    vibrateChime();
+                    vibrateHaptic([200, 100, 200, 100, 500]);
                     playCallAttendantChime();
                     setTimeout(() => {
                         playVoiceMessage("Atenção líderes. O nosso plano de voo está concluído e a rota está traçada. A Brisanet agradece a vossa dedicação. Lembrem-se: o cliente está no centro de tudo. Uma excelente convenção a todos.");
@@ -723,7 +728,7 @@
 
         function prevStep() {
             if (currentStep <= 1) return; 
-            vibrateClick(); currentStep--; 
+            vibrateHaptic(30); currentStep--; 
             const targetIndex = currentStep - 1; 
             const data = conventionData[targetIndex];
             const target = routeWaypoints[targetIndex];
