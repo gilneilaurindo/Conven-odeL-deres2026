@@ -55,10 +55,23 @@
 
         /* === BRANDING LOGOS E DECORAÇÃO === */
         .fixed-logo { position: absolute; top: 20px; left: 20px; z-index: 20; max-width: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
+        
+        /* Círculos decorativos (Padrão para Desktop) */
         .ring-top-left { position: absolute; top: -5%; left: -2%; width: 180px; height: 180px; border-radius: 50%; border: 25px solid rgba(255, 157, 0, 0.4); z-index: 0; pointer-events: none; }
         .dot-top-left { position: absolute; top: 10%; left: 12%; width: 25px; height: 25px; border-radius: 50%; background: rgba(255, 157, 0, 0.6); z-index: 0; pointer-events: none; }
         .ring-bottom-left { position: absolute; bottom: -10%; left: -5%; width: 200px; height: 200px; border-radius: 50%; background: rgba(255, 157, 0, 0.2); z-index: 0; pointer-events: none; }
         .ring-bottom-mid { position: absolute; bottom: -8%; left: 50%; transform: translateX(-50%); width: 120px; height: 120px; border-radius: 50%; border: 20px solid rgba(255, 157, 0, 0.3); z-index: 0; pointer-events: none; }
+
+        /* AJUSTES MOBILE: Visão totalmente laranja e limpa */
+        @media (max-width: 1023px) {
+            /* Remove os círculos decorativos no celular */
+            .ring-top-left, .dot-top-left, .ring-bottom-left, .ring-bottom-mid {
+                display: none !important;
+            }
+            /* Deixa as nuvens mais sutis no mobile para destacar o laranja sólido */
+            #clouds-layer { opacity: 0.05 !important; }
+            #clouds-layer.flying { opacity: 0.4 !important; }
+        }
 
         /* === ANIMAÇÕES DE TEXTO === */
         .slide-up-element { opacity: 0; transform: translateY(20px); animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -76,7 +89,7 @@
 
         /* === AMBIENTE 3D DINÂMICO === */
         .map-stage {
-            position: absolute; top: 0; right: 0; width: 100%; height: 45dvh; display: flex; justify-content: center; align-items: center; z-index: 1; perspective: 2000px;
+            position: absolute; top: 0; right: 0; width: 100%; height: 50dvh; display: flex; justify-content: center; align-items: center; z-index: 1; perspective: 2000px;
         }
         @media (min-width: 1024px) { .map-stage { width: 65%; height: 100dvh; } }
 
@@ -141,14 +154,13 @@
             position: absolute; bottom: 0; left: 0; width: 100%;
             background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border-top: 1px solid rgba(255, 255, 255, 0.2); z-index: 10; 
-            max-height: 70dvh; /* Mais espaço para leitura da agenda no telemóvel */
+            max-height: 60dvh; /* Ajustado para deixar o mapa mais visível no mobile */
             display: flex; flex-direction: column; border-radius: 24px 24px 0 0;
         }
         @media (min-width: 1024px) { .tracker-panel { top: 50%; left: 40px; bottom: auto; transform: translateY(-50%); width: 440px; max-height: 85vh; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); } }
 
         .kpi-box { background: rgba(0, 0, 0, 0.2); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
         
-        /* Nova estruturação dos blocos de horário para alinhamento perfeito (Mobile Assertivo) */
         .time-badge { 
             display: inline-flex; align-items: center; justify-content: center;
             background: #FFFFFF; color: #FF6600; padding: 3px 8px; border-radius: 6px; 
@@ -162,13 +174,16 @@
             padding: 8px 10px; border-radius: 6px; border-left: 3px solid #FFCA28; 
         }
         
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        button:disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(50%); }
         ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.4); border-radius: 4px; }
     </style>
 </head>
 
 <body>
     <div id="clouds-layer"></div>
+
+    <!-- Elementos decorativos invisiveis no mobile -->
+    <div class="ring-top-left"></div><div class="dot-top-left"></div><div class="ring-bottom-left"></div><div class="ring-bottom-mid"></div>
 
     <img src="https://raw.githubusercontent.com/gilneilaurindo/Conven-odeL-deres2026/main/logo%20brisanet.png" alt="Brisanet" class="fixed-logo hidden lg:block">
 
@@ -182,7 +197,6 @@
         <p class="text-[#FFCA28] text-sm lg:text-base font-bold mb-12 text-center px-6 slide-up-element delay-200">Acompanhe a agenda estratégica da nossa Convenção.</p>
         
         <button id="btn-onboarding" onclick="startJourney()" disabled class="px-8 py-4 bg-gradient-to-r from-[#FF7B00] to-[#E63900] border-2 border-[#FFCA28] text-white rounded-full font-black uppercase tracking-wider text-sm shadow-[0_10px_30px_rgba(255,202,40,0.4)] hover:scale-105 transition-transform flex items-center gap-3 slide-up-element delay-300 disabled:opacity-50 disabled:scale-100">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-.5-.5-2.5 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.7l-1.2 3.6c-.1.4.1.9.5 1.1L9 14l-4 4-2.5-.5c-.4-.1-.8.1-1 .5l-.5 1.5c-.1.4.1.8.5.9l4.5 1.5 1.5 4.5c.1.4.5.6.9.5l1.5-.5c.4-.2.6-.6.5-1l-.5-2.5 4-4 2.4 6c.2.4.7.6 1.1.5l3.6-1.2c.5-.2.8-.6.7-1.1z"/></svg>
             Apertar os Cintos
         </button>
     </div>
@@ -194,9 +208,6 @@
         <p class="finale-sub px-6">O plano está traçado. O cliente no centro de tudo.<br><br>Preparem-se para fazer história! 🚀</p>
         <button onclick="document.getElementById('finale-overlay').classList.remove('show');" class="mt-10 px-8 py-3 bg-gradient-to-r from-[#FF7B00] to-[#E63900] border-2 border-[#FFCA28] rounded-full text-white font-black uppercase text-sm hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,202,40,0.4)]">Rever a Rota</button>
     </div>
-
-    <!-- Fundo Decorativo -->
-    <div class="ring-top-left"></div><div class="dot-top-left"></div><div class="ring-bottom-left"></div><div class="ring-bottom-mid"></div>
 
     <!-- MAPA 3D -->
     <div class="map-stage" id="main-stage">
@@ -388,14 +399,22 @@
             noiseSource.start(); noiseSource.stop(ctx.currentTime + 2);
         }
 
-        // === VOZ HUMANIZADA E ASSERTIVA EM PT-BR ===
-        function playVoiceMessage(text) {
+        // === VOZ HUMANIZADA E SINCRONIZADA ===
+        function playVoiceMessage(text, callback) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const msg = new SpeechSynthesisUtterance(text);
                 msg.lang = 'pt-BR'; 
                 msg.rate = 1.05; 
                 msg.pitch = 1.1; 
+                
+                // Habilita os botões de avançar/voltar apenas quando terminar de falar
+                msg.onend = function() {
+                    if (callback) callback();
+                };
+                msg.onerror = function() {
+                    if (callback) callback();
+                };
                 
                 let voices = window.speechSynthesis.getVoices();
                 const setVoice = () => {
@@ -408,10 +427,13 @@
                 };
                 if (voices.length === 0) window.speechSynthesis.onvoiceschanged = setVoice;
                 else setVoice();
+            } else {
+                // Fallback caso o navegador não suporte voz
+                if (callback) setTimeout(callback, 2000);
             }
         }
 
-        // === AGENDA E GUIÃO ASSERTIVO (MOBILE FLEXBOX) ===
+        // === AGENDA E GUIÃO ASSERTIVO ===
         const routeSequence = ['CE', 'RN', 'PB', 'PE', 'AL', 'BA', 'MA', 'PI', 'GO', 'MS'];
         const TOTAL_STEPS = routeSequence.length;
 
@@ -606,7 +628,7 @@
             playTakeoffSound(); 
             
             setTimeout(() => {
-                playVoiceMessage("Atenção, líderes. Bem-vindos ao voo da Convenção Brizanéti 2026. Por favor, apertem os cintos. A nossa jornada estratégica vai começar.");
+                playVoiceMessage("Atenção, líderes. Bem-vindos ao voo. Por favor, apertem os cintos. A nossa jornada estratégica vai começar.");
             }, 1800);
             
             document.getElementById('onboarding-overlay').classList.add('hide');
@@ -654,17 +676,12 @@
                 descEl.innerHTML = data.desc; 
             }
             
+            // Os botões agora são desabilitados aqui para aguardar a voz
             if(!isInitialLoad) {
                 const btnNext = document.getElementById('btn-next');
                 const btnPrev = document.getElementById('btn-prev');
-                
                 if (btnNext) btnNext.disabled = true; 
                 if (btnPrev) btnPrev.disabled = true;
-                
-                setTimeout(() => {
-                    if (stepIndex < TOTAL_STEPS - 1 && btnNext) btnNext.disabled = false;
-                    if (stepIndex > 0 && btnPrev) btnPrev.disabled = false;
-                }, 1500);
             }
         }
 
@@ -673,21 +690,36 @@
             const data = conventionData[currentStep];
             const target = routeWaypoints[currentStep];
             const isFirst = (currentStep === 0);
+            
+            const currentStepIndexForCallback = currentStep; // Armazena index atual para o callback da voz
 
+            // Função que libera botões somente quando a voz termina
+            const onSpeechEnd = () => {
+                const btnNext = document.getElementById('btn-next');
+                const btnPrev = document.getElementById('btn-prev');
+                if (currentStepIndexForCallback < TOTAL_STEPS - 1 && btnNext) btnNext.disabled = false;
+                if (currentStepIndexForCallback > 0 && btnPrev) btnPrev.disabled = false;
+                
+                if (currentStepIndexForCallback === TOTAL_STEPS - 1 && btnNext) {
+                    btnNext.innerHTML = 'Concluído';
+                    btnNext.disabled = false; // Garante que o usuário possa finalizar após a voz
+                }
+            };
+
+            // Desabilita botões temporariamente
+            updateUI(data, currentStep);
+
+            // Chama o aúdio e passa o callback
             if (!isFirst && currentStep < TOTAL_STEPS - 1) {
                 playCallAttendantChime();
                 playAirplaneSwoosh(); 
-                setTimeout(() => playVoiceMessage(data.speechText), 1500);
+                setTimeout(() => playVoiceMessage(data.speechText, onSpeechEnd), 1500);
             } else if (isFirst) {
-                setTimeout(() => playVoiceMessage(data.speechText), 500);
-            }
-
-            if (currentStep === TOTAL_STEPS - 1) {
+                setTimeout(() => playVoiceMessage(data.speechText, onSpeechEnd), 500);
+            } else if (currentStep === TOTAL_STEPS - 1) {
                 playLandingSound();
-                setTimeout(() => playVoiceMessage(data.speechText), 1500);
+                setTimeout(() => playVoiceMessage(data.speechText, onSpeechEnd), 1500);
             }
-
-            updateUI(data, currentStep);
 
             for(let i = 0; i < currentStep; i++) {
                 const pastGroup = document.getElementById(`state-group-${conventionData[i].id}`);
@@ -733,7 +765,7 @@
             const btnNext = document.getElementById('btn-next');
 
             if (currentStep === TOTAL_STEPS - 1) {
-                if(btnNext) btnNext.innerHTML = 'Concluído';
+                // A UI final aguarda um momento a mais
                 setTimeout(() => {
                     map3d.style.transition = 'transform 3.5s cubic-bezier(0.25, 1, 0.3, 1)';
                     map3d.style.transform = 'rotateX(55deg) rotateZ(10deg) scale(0.65) translateY(100px)';
@@ -749,7 +781,9 @@
                     if (stateGroup) stateGroup.classList.add('state-visited');
                 }, 3500);
             } else {
-                if(btnNext) btnNext.innerHTML = 'Avançar <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+                if(btnNext && currentStep !== TOTAL_STEPS - 1) {
+                     btnNext.innerHTML = 'Avançar <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+                }
             }
             currentStep++;
         }
@@ -766,9 +800,17 @@
             const data = conventionData[targetIndex];
             const target = routeWaypoints[targetIndex];
 
+            // Função para liberar botões ao voltar
+            const onSpeechEnd = () => {
+                const btnNext = document.getElementById('btn-next');
+                const btnPrev = document.getElementById('btn-prev');
+                if (btnNext) btnNext.disabled = false;
+                if (targetIndex > 0 && btnPrev) btnPrev.disabled = false;
+            };
+
             playAirplaneSwoosh(); 
             playCallAttendantChime();
-            setTimeout(() => playVoiceMessage(`Retornando para a etapa: ${data.title}.`), 1000);
+            setTimeout(() => playVoiceMessage(`Retornando para a etapa: ${data.title}.`, onSpeechEnd), 1000);
 
             updateUI(data, targetIndex);
             
